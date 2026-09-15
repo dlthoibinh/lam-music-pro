@@ -1,0 +1,237 @@
+name: Isolated Android toolchain bootstrap
+run-name: R58 public dependency bootstrap - no app source
+on:
+  push:
+    branches: [build-tools/r58-offline-20260915]
+    paths: [.github/workflows/r58-toolchain-bootstrap.yml]
+permissions:
+  contents: read
+concurrency:
+  group: r58-toolchain-bootstrap
+  cancel-in-progress: false
+jobs:
+  toolchain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Prepare public tools and a synthetic dependency-only project
+        shell: bash
+        run: |
+          set -euo pipefail
+          export JAVA_HOME="$JAVA_HOME_21_X64"
+          echo "JAVA_HOME=$JAVA_HOME" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME/bin" >> "$GITHUB_PATH"
+          export GRADLE_USER_HOME="$RUNNER_TEMP/r58-gradle-home"
+          echo "GRADLE_USER_HOME=$GRADLE_USER_HOME" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/r58-bootstrap" "$RUNNER_TEMP/r58-payload" "$RUNNER_TEMP/r58-encrypted"
+          cd "$RUNNER_TEMP/r58-bootstrap"
+          curl --fail --location --retry 3 https://services.gradle.org/distributions/gradle-8.13-bin.zip -o gradle-8.13-bin.zip
+          echo '20f1b1176237254a6fc204d8434196fa11a4cfb387567519c61556e8710aed78  gradle-8.13-bin.zip' | sha256sum -c -
+          unzip -q gradle-8.13-bin.zip
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;35.0.0' 'build-tools;36.0.0' 'platform-tools'
+          mkdir -p project/app/src/main/java/example/bootstrap project/app/src/test/java/example/bootstrap
+          cd project
+          cat > settings.gradle.kts <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          rootProject.name = "PublicDependencyBootstrap"
+          include(":app")
+          EOF
+          cat > gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          kotlin.code.style=official
+          EOF
+          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
+          cat > build.gradle.kts <<'EOF'
+          plugins {
+              id("com.android.application") version "8.13.2" apply false
+              id("org.jetbrains.kotlin.android") version "2.3.21" apply false
+              id("org.jetbrains.kotlin.plugin.compose") version "2.3.21" apply false
+              id("com.google.devtools.ksp") version "2.3.9" apply false
+          }
+          EOF
+          cat > app/build.gradle.kts <<'EOF'
+          import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+          plugins {
+              id("com.android.application")
+              id("org.jetbrains.kotlin.android")
+              id("org.jetbrains.kotlin.plugin.compose")
+              id("com.google.devtools.ksp")
+          }
+          android {
+              namespace = "example.bootstrap"
+              compileSdk = 36
+              defaultConfig {
+                  applicationId = "example.bootstrap"
+                  minSdk = 26
+                  targetSdk = 36
+                  versionCode = 1
+                  versionName = "1.0"
+                  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+              }
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+                  isCoreLibraryDesugaringEnabled = true
+              }
+              buildFeatures { compose = true; buildConfig = true }
+              testOptions { unitTests.isReturnDefaultValues = true }
+          }
+          kotlin { compilerOptions { jvmTarget.set(JvmTarget.JVM_17) } }
+          ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+          val media3Version = "1.11.0"
+          val roomVersion = "2.7.2"
+          dependencies {
+              coreLibraryDesugaring("com.android.tools:desugar_jdk_libs_nio:2.1.5")
+              implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+              implementation("androidx.activity:activity-compose:1.10.1")
+              implementation("androidx.fragment:fragment:1.8.9")
+              implementation("androidx.core:core-ktx:1.16.0")
+              implementation("androidx.compose.material3:material3")
+              implementation("androidx.compose.material:material-icons-extended")
+              implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+              implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+              implementation("androidx.car.app:app:1.7.0")
+              implementation("androidx.car.app:app-projected:1.7.0")
+              implementation("org.maplibre.gl:android-sdk-opengl:13.5.1")
+              implementation("androidx.media:media:1.8.0")
+              implementation("androidx.media3:media3-exoplayer:$media3Version")
+              implementation("androidx.media3:media3-exoplayer-hls:$media3Version")
+              implementation("androidx.media3:media3-exoplayer-dash:$media3Version")
+              implementation("androidx.media3:media3-exoplayer-smoothstreaming:$media3Version")
+              implementation("androidx.media3:media3-exoplayer-rtsp:$media3Version")
+              implementation("androidx.media3:media3-ui:$media3Version")
+              implementation("androidx.media3:media3-session:$media3Version")
+              implementation("androidx.media3:media3-datasource:$media3Version")
+              implementation("com.squareup.okhttp3:okhttp:5.4.0")
+              implementation("androidx.work:work-runtime-ktx:2.10.1")
+              implementation("androidx.profileinstaller:profileinstaller:1.4.1")
+              implementation("androidx.room:room-runtime:$roomVersion")
+              ksp("androidx.room:room-compiler:$roomVersion")
+              implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+              implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.10.1")
+              implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.1")
+              implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
+              implementation("com.google.firebase:firebase-auth")
+              implementation("androidx.credentials:credentials:1.3.0")
+              implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+              implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+              implementation("com.google.firebase:firebase-firestore")
+              implementation("com.google.firebase:firebase-messaging")
+              implementation("com.google.firebase:firebase-functions")
+              implementation("com.google.firebase:firebase-appcheck-playintegrity")
+              implementation("com.android.billingclient:billing:9.1.0")
+              implementation("com.google.android.gms:play-services-ads:25.4.0")
+              implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+              implementation("com.google.android.play:app-update:2.1.0")
+              implementation("com.google.android.play:app-update-ktx:2.1.0")
+              implementation("com.google.android.play:review:2.0.2")
+              implementation("com.google.android.play:review-ktx:2.0.2")
+              testImplementation("junit:junit:4.13.2")
+              testImplementation("org.jetbrains.kotlin:kotlin-test:2.3.21")
+              testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+              testImplementation("org.json:json:20240303")
+              androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
+              androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+              debugImplementation("androidx.compose.ui:ui-test-manifest")
+              androidTestImplementation("androidx.test:core-ktx:1.7.0")
+              androidTestImplementation("androidx.test.ext:junit-ktx:1.3.0")
+              androidTestImplementation("androidx.test:runner:1.7.0")
+              androidTestImplementation("androidx.test:rules:1.7.0")
+              androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+              androidTestImplementation("androidx.test.espresso:espresso-device:1.1.0")
+              androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+              androidTestImplementation("androidx.room:room-testing:$roomVersion")
+              androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+              androidTestUtil("androidx.test:orchestrator:1.6.1")
+          }
+          EOF
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"><uses-permission android:name="android.permission.INTERNET"/><application android:label="Dependency bootstrap" android:theme="@android:style/Theme.Material.Light.NoActionBar"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity></application></manifest>
+          EOF
+          cat > app/src/main/java/example/bootstrap/MainActivity.kt <<'EOF'
+          package example.bootstrap
+          import android.os.Bundle
+          import androidx.activity.ComponentActivity
+          import androidx.activity.compose.setContent
+          import androidx.compose.material3.Text
+          import androidx.room.*
+          class MainActivity : ComponentActivity() {
+              override fun onCreate(state: Bundle?) { super.onCreate(state); setContent { Text("Synthetic dependency bootstrap, not the application") } }
+          }
+          @Entity data class Entry(@PrimaryKey val id: Int, val text: String)
+          @Dao interface Entries { @Query("SELECT * FROM Entry") fun all(): List<Entry> }
+          @Database(entities = [Entry::class], version = 1, exportSchema = true)
+          abstract class ExampleDatabase : RoomDatabase() { abstract fun entries(): Entries }
+          EOF
+          cat > app/src/test/java/example/bootstrap/BootstrapTest.kt <<'EOF'
+          package example.bootstrap
+          import org.junit.Assert.assertEquals
+          import org.junit.Test
+          class BootstrapTest { @Test fun bootstrapOnly() { assertEquals(2, 1 + 1) } }
+          EOF
+      - name: Resolve and compile the synthetic project, not the user application
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/r58-bootstrap/project"
+          ../gradle-8.13/bin/gradle --no-daemon --console=plain --max-workers=3 :app:assembleDebug :app:testDebugUnitTest :app:lintDebug :app:assembleDebugAndroidTest
+      - name: Encrypt tools for local use - do not export source, APK, keys, tokens or runner home
+        shell: bash
+        run: |
+          set -euo pipefail
+          B="$RUNNER_TEMP/r58-bootstrap"
+          P="$RUNNER_TEMP/r58-payload"
+          mkdir -p "$P/android-sdk/platforms" "$P/android-sdk/build-tools" "$P/gradle-home"
+          cp "$B/gradle-8.13-bin.zip" "$P/"
+          cp -a "$ANDROID_HOME/platforms/android-36" "$P/android-sdk/platforms/"
+          cp -a "$ANDROID_HOME/build-tools/35.0.0" "$ANDROID_HOME/build-tools/36.0.0" "$P/android-sdk/build-tools/"
+          cp -a "$ANDROID_HOME/platform-tools" "$ANDROID_HOME/licenses" "$P/android-sdk/"
+          cp -a "$GRADLE_USER_HOME/caches" "$P/gradle-home/"
+          find "$P/gradle-home" -name '*.lock' -type f -delete
+          tar -czf "$RUNNER_TEMP/r58-tools.tar.gz" -C "$P" .
+          cat > "$RUNNER_TEMP/r58-public.pem" <<'EOF'
+          -----BEGIN PUBLIC KEY-----
+          MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAzNIjkUHB+zObLr2bDbsR
+          oaDwWSStLv9ljoa1Z1EPe815pVmRQ8xyzSdoPV4sqb7/6kL7zvnE/mqd/VpdcvIn
+          0629ZYD3d4FjkTAyTm3mUz0eTRWb75kZVAWMvKvzApimeg0wHZLJwp48MzgwuiAR
+          oYht8Ev+Cgn3Dq1zCQWdZaJKLwq6ktOt7T2l/aph3mZten0sMzpwNob2mK/ixkg+
+          Ai6JP/DV9InrpvJlhUF+fBrFMlZGmSNT2zP9za5A5IX09unDpxXWChDQ1R11Ue0N
+          QRyE3imJ1HOG8/dGKnJT2FV0w/P5Yh1as5zQqiX9CEfEP40+yMczA602VLB9MW+S
+          lFEc7/zRwCHdAEzWe9WUAl4HlvTYeGBrLG5ec68gHUIJMA/nAuBwug1G9shxmZd4
+          UQtVFNJ5oe4aZHVDDHw+2qWpHLUtayaVrIZQ995u9HZAfK3AgZX4CKCYK3EqfRxq
+          nqVf5VXYZFreRM62ZJI5yG+EQMgBaRLVgS6urJdlXzh1AgMBAAE=
+          -----END PUBLIC KEY-----
+          EOF
+          /usr/bin/python3 - <<'PY'
+          import os, json, base64, hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives import serialization, hashes
+          from cryptography.hazmat.primitives.asymmetric import padding
+          from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+          root=Path(os.environ['RUNNER_TEMP'])
+          pub=serialization.load_pem_public_key((root/'r58-public.pem').read_bytes())
+          key=os.urandom(32); nonce=os.urandom(12)
+          enc=Cipher(algorithms.AES(key),modes.GCM(nonce)).encryptor()
+          digest=hashlib.sha256()
+          with (root/'r58-tools.tar.gz').open('rb') as src, (root/'r58-encrypted/tools.enc').open('wb') as dst:
+              while True:
+                  chunk=src.read(4*1024*1024)
+                  if not chunk: break
+                  value=enc.update(chunk); dst.write(value); digest.update(value)
+              value=enc.finalize(); dst.write(value); digest.update(value)
+          wrapped=pub.encrypt(key,padding.OAEP(mgf=padding.MGF1(hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+          b64=lambda value:base64.b64encode(value).decode('ascii')
+          header={'format':'AES256GCM_RSA3072_OAEP_SHA256','wrapped_key':b64(wrapped),'nonce':b64(nonce),'tag':b64(enc.tag),'ciphertext_sha256':digest.hexdigest(),'scope':'Public dependency tools only. No application source, application test result, production configuration or production signing key.'}
+          (root/'r58-encrypted/header.json').write_text(json.dumps(header,indent=2))
+          print('Encrypted public toolchain. This is NOT a build or test of the user application.')
+          PY
+      - name: Return encrypted public tools only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-encrypted-public-toolchain
+          path: ${{ runner.temp }}/r58-encrypted/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
