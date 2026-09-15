@@ -1,0 +1,67 @@
+name: Isolated public Android emulator tools
+run-name: R58 emulator download only - no app source
+on:
+  push:
+    branches: [build-tools/r58-offline-20260915]
+    paths: [.github/workflows/r58-emulator-bootstrap.yml]
+permissions:
+  contents: read
+jobs:
+  emulator-tools:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Fetch official Android emulator and system image only
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'emulator' 'system-images;android-36;google_apis;x86_64'
+          mkdir -p "$RUNNER_TEMP/emu-payload/android-sdk/cmdline-tools" "$RUNNER_TEMP/emu-payload/android-sdk/system-images/android-36/google_apis" "$RUNNER_TEMP/emu-encrypted"
+          cp -a "$ANDROID_HOME/emulator" "$RUNNER_TEMP/emu-payload/android-sdk/"
+          cp -a "$ANDROID_HOME/cmdline-tools/latest" "$RUNNER_TEMP/emu-payload/android-sdk/cmdline-tools/"
+          cp -a "$ANDROID_HOME/system-images/android-36/google_apis/x86_64" "$RUNNER_TEMP/emu-payload/android-sdk/system-images/android-36/google_apis/"
+          tar -I 'gzip -1' -cf "$RUNNER_TEMP/emu-tools.tar.gz" -C "$RUNNER_TEMP/emu-payload" .
+      - name: Encrypt public tools for local use
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/emu-public.pem" <<'EOF'
+          -----BEGIN PUBLIC KEY-----
+          MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAzNIjkUHB+zObLr2bDbsR
+          oaDwWSStLv9ljoa1Z1EPe815pVmRQ8xyzSdoPV4sqb7/6kL7zvnE/mqd/VpdcvIn
+          0629ZYD3d4FjkTAyTm3mUz0eTRWb75kZVAWMvKvzApimeg0wHZLJwp48MzgwuiAR
+          oYht8Ev+Cgn3Dq1zCQWdZaJKLwq6ktOt7T2l/aph3mZten0sMzpwNob2mK/ixkg+
+          Ai6JP/DV9InrpvJlhUF+fBrFMlZGmSNT2zP9za5A5IX09unDpxXWChDQ1R11Ue0N
+          QRyE3imJ1HOG8/dGKnJT2FV0w/P5Yh1as5zQqiX9CEfEP40+yMczA602VLB9MW+S
+          lFEc7/zRwCHdAEzWe9WUAl4HlvTYeGBrLG5ec68gHUIJMA/nAuBwug1G9shxmZd4
+          UQtVFNJ5oe4aZHVDDHw+2qWpHLUtayaVrIZQ995u9HZAfK3AgZX4CKCYK3EqfRxq
+          nqVf5VXYZFreRM62ZJI5yG+EQMgBaRLVgS6urJdlXzh1AgMBAAE=
+          -----END PUBLIC KEY-----
+          EOF
+          /usr/bin/python3 - <<'PY'
+          import os,json,base64,hashlib
+          from pathlib import Path
+          from cryptography.hazmat.primitives import serialization,hashes
+          from cryptography.hazmat.primitives.asymmetric import padding
+          from cryptography.hazmat.primitives.ciphers import Cipher,algorithms,modes
+          root=Path(os.environ['RUNNER_TEMP'])
+          pub=serialization.load_pem_public_key((root/'emu-public.pem').read_bytes())
+          key=os.urandom(32);nonce=os.urandom(12)
+          enc=Cipher(algorithms.AES(key),modes.GCM(nonce)).encryptor(); digest=hashlib.sha256()
+          with (root/'emu-tools.tar.gz').open('rb') as src, (root/'emu-encrypted/tools.enc').open('wb') as dst:
+              while chunk:=src.read(4*1024*1024):
+                  value=enc.update(chunk);dst.write(value);digest.update(value)
+              value=enc.finalize();dst.write(value);digest.update(value)
+          wrapped=pub.encrypt(key,padding.OAEP(mgf=padding.MGF1(hashes.SHA256()),algorithm=hashes.SHA256(),label=None))
+          b64=lambda v:base64.b64encode(v).decode('ascii')
+          (root/'emu-encrypted/header.json').write_text(json.dumps({'format':'AES256GCM_RSA3072_OAEP_SHA256','wrapped_key':b64(wrapped),'nonce':b64(nonce),'tag':b64(enc.tag),'ciphertext_sha256':digest.hexdigest(),'scope':'Official public emulator tools only; no application, source, credential, signing key or app test result.'},indent=2))
+          print('Encrypted public emulator tools prepared. No user app was uploaded or tested in this job.')
+          PY
+      - name: Return encrypted public emulator tools only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-encrypted-public-emulator
+          path: ${{ runner.temp }}/emu-encrypted/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
