@@ -1,0 +1,104 @@
+name: Android tools resolved SDK path
+on:
+  push:
+    branches: [build/android-toolchain-20260915]
+    paths: [.github/workflows/android-toolchain-retry.yml]
+permissions:
+  contents: read
+jobs:
+  transfer:
+    strategy:
+      fail-fast: false
+      matrix:
+        kind: [core, emulator]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - name: Resolve public SDK and dependencies without application source
+        env:
+          TOOL_KIND: ${{ matrix.kind }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user 'PyYAML==6.0.2'
+          curl --fail --location --retry 3 'https://raw.githubusercontent.com/dlthoibinh/lam-music-pro/143a2d11a48ed51fd2cc61d9d3d6df436845b275/.github/workflows/android-toolchain-transfer.yml' -o "$RUNNER_TEMP/public-tools.yml"
+          export RESOLVED_SDKMANAGER="$(find -L "$ANDROID_HOME/cmdline-tools" -path '*/bin/sdkmanager' -type f | sort -V | tail -1)"
+          test -x "$RESOLVED_SDKMANAGER"
+          printf 'SDK manager: %s\n' "$RESOLVED_SDKMANAGER"
+          python3 - <<'PY'
+          import os, pathlib, subprocess, yaml
+          cfg = yaml.safe_load((pathlib.Path(os.environ['RUNNER_TEMP']) / 'public-tools.yml').read_text())
+          env = dict(os.environ)
+          env['TRANSFER_CERT'] = cfg['env']['TRANSFER_CERT']
+          env['JAVA_HOME'] = env['JAVA_HOME_21_X64']
+          env['PATH'] = env['JAVA_HOME'] + '/bin:' + env['PATH']
+          env['GRADLE_USER_HOME'] = env['RUNNER_TEMP'] + '/tool-gradle-home'
+          failed = False
+          for step in cfg['jobs'][env['TOOL_KIND']]['steps']:
+              if 'run' not in step:
+                  continue
+              if failed and step.get('if') != 'always()':
+                  continue
+              print('RUN:', step['name'], flush=True)
+              script = step['run'].replace("sdkmanager '", '"$RESOLVED_SDKMANAGER" \'')
+              result = subprocess.run(['bash', '-eu', '-o', 'pipefail', '-c', script], env=env)
+              if result.returncode:
+                  failed = True
+                  print('STEP FAILED:', result.returncode, flush=True)
+          raise SystemExit(1 if failed else 0)
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-00
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.00
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-01
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.01
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-02
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.02
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-03
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.03
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-04
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.04
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-05
+          path: ${{ runner.temp }}/out/${{ matrix.kind }}.part.05
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: resolved-${{ matrix.kind }}-checksums
+          path: ${{ runner.temp }}/out/*.sha256
+          retention-days: 1
+          if-no-files-found: error
