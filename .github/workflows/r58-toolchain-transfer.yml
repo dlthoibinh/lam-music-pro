@@ -1,0 +1,61 @@
+name: Transfer encrypted public toolchain in bounded parts
+run-name: R58 encrypted toolchain transfer only
+on:
+  push:
+    branches: [build-tools/r58-offline-20260915]
+    paths: [.github/workflows/r58-toolchain-transfer.yml]
+permissions:
+  actions: read
+  contents: read
+jobs:
+  bounded-transfer:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Read the existing encrypted public tool archive only
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: r58-encrypted-public-toolchain
+          run-id: 34989933231
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/encrypted
+      - name: Split ciphertext without decrypting
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/encrypted"
+          split -b 300M -d -a 2 tools.enc tools.enc.part-
+          test "$(find . -name 'tools.enc.part-*' | wc -l)" -eq 4
+          for n in 00 01 02 03; do
+            mkdir -p "$RUNNER_TEMP/part-$n"
+            mv "tools.enc.part-$n" "$RUNNER_TEMP/part-$n/"
+            cp header.json "$RUNNER_TEMP/part-$n/"
+          done
+      - name: Return part 00
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-tools-part-00
+          path: ${{ runner.temp }}/part-00/
+          retention-days: 1
+          compression-level: 0
+      - name: Return part 01
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-tools-part-01
+          path: ${{ runner.temp }}/part-01/
+          retention-days: 1
+          compression-level: 0
+      - name: Return part 02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-tools-part-02
+          path: ${{ runner.temp }}/part-02/
+          retention-days: 1
+          compression-level: 0
+      - name: Return part 03
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: r58-tools-part-03
+          path: ${{ runner.temp }}/part-03/
+          retention-days: 1
+          compression-level: 0
