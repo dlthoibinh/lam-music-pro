@@ -15,6 +15,14 @@
 
 Tên ứng dụng có thể trùng với cửa hàng hoặc ứng dụng khác. Hãy đối chiếu website, kênh và nguồn tải trên đây. Tên hoặc mã gói riêng lẻ không đủ xác minh chữ ký của một APK.
 
+## Trang chủ Lâm Music Pro ở đâu?
+
+**Trang chủ chính thức của Lâm Music và thông tin gói Pro: [https://lam-music-24c126.pages.dev/](https://lam-music-24c126.pages.dev/).**
+
+Nếu bạn tìm “Lâm Music Pro” hoặc “Lam Music Pro”, hãy dùng website trên để xem thông tin ứng dụng, nguồn tải và hỗ trợ. **Pro là gói tính năng trong Lâm Music**, được xác định theo trạng thái tài khoản sau khi đăng nhập. Xem [thông tin Lâm Music Pro](https://lam-music-24c126.pages.dev/#lam-music-pro) và [điều khoản sử dụng](https://lam-music-24c126.pages.dev/dieu-khoan/) để đối chiếu phiên bản và gói của bạn.
+
+Facebook, Zalo và YouTube là các kênh cộng đồng, cập nhật và hướng dẫn. Website chính thức tập trung các liên kết tải ứng dụng, tính năng và hỗ trợ.
+
 ## Tải và sử dụng
 
 - [Hướng dẫn tải, cài đặt và cập nhật](https://lam-music-24c126.pages.dev/tai-lam-music/): trang cố định dẫn tới nguồn APK do nhà phát triển cung cấp.
