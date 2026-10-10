@@ -11,6 +11,9 @@
 | Bản Direct trên APKPure | [Lâm Music – Nhạc & Lâm Map](https://apkpure.com/p/vn.lamdai.music.direct) |
 | Bản Direct trên Uptodown | [Lâm Music – Nhạc & Lâm Map](https://lam-music-nh-c-and-lam-map.en.uptodown.com/android) |
 | YouTube | [@LamMusicApp](https://www.youtube.com/@LamMusicApp) |
+| TikTok | [@xinhchaua.official](https://www.tiktok.com/@xinhchaua.official) |
+| Nhóm hỗ trợ Zalo | [Cộng đồng Lâm Music](https://zalo.me/g/o0sdnhud7gzo7f7jokpu) |
+| Thông tin gói Pro trên Shopee | [moingaymoiniemvui](https://shopee.vn/moingaymoiniemvui) |
 | Nhà phát triển | Lâm Đại Ka |
 | Hỗ trợ | [lamdltb@gmail.com](mailto:lamdltb@gmail.com) |
 
@@ -64,4 +67,4 @@ Nếu nhận link qua Zalo hoặc Facebook, hãy mở [trang tải Lâm Music ch
 - [Yêu cầu xóa tài khoản và dữ liệu](https://dlthoibinh.github.io/lam-music-pro/account-deletion.html)
 - [Đọc chính sách bằng Markdown](PRIVACY_POLICY.md)
 
-Nội dung chính sách cập nhật **13/09/2026**. Thông tin nhận diện và liên kết website cập nhật **05/10/2026**.
+Nội dung chính sách cập nhật **13/09/2026**. Thông tin nhận diện và liên kết website cập nhật **10/10/2026**.
