@@ -60,6 +60,36 @@ Nếu nhận link qua Zalo hoặc Facebook, hãy mở [trang tải Lâm Music ch
 | Cài trên iPhone hoặc iPad | [Hướng dẫn thiết bị trên trang tải](https://lam-music-24c126.pages.dev/tai-lam-music/#tai-ios). APK không cài được trên iPhone/iPad; trang tải chính thức hiện không cung cấp bản iOS. |
 | Xem thao tác thực tế trước khi cài | [Video hướng dẫn Lâm Music](https://lam-music-24c126.pages.dev/video/) và [kênh @LamMusicApp](https://www.youtube.com/@LamMusicApp). |
 
+
+## English — official app information
+
+**Lâm Music (Lam Music, LamMusic, LamMusicApp) is an Android music app with the integrated Lam Map feature.** Listen to local files and supported Google Drive sources, organize playlists, enjoy Radio and use a sleep timer. Lam Map provides map and journey information; compatible Android phones can display a floating traffic-warning panel while another app is open.
+
+- **Official website:** https://lam-music-24c126.pages.dev/
+- **Official download and device guide:** https://lam-music-24c126.pages.dev/tai-lam-music/
+- **English introduction:** https://lam-music-24c126.pages.dev/about/
+- **Developer:** Lâm Đại Ka. **Support:** [lamdltb@gmail.com](mailto:lamdltb@gmail.com).
+- **Official video channel:** [@LamMusicApp](https://www.youtube.com/@LamMusicApp).
+
+### Editions, devices and common questions
+
+| Question | App information and limits |
+| --- | --- |
+| Is Lam Map a separate app? | Lam Map is integrated into Lâm Music. Use the Lâm Music download guide above; this project does not offer a separate Lam Map APK. |
+| Play or Direct? | Play uses `vn.lamdai.music` and does not offer YouTube background playback. Direct uses `vn.lamdai.music.direct` and is distributed outside Google Play. Supported background playback and downloads depend on the source, release and device. |
+| Is Pro a different APK? | Pro is an in-app feature plan associated with the account. Installing an APK does not automatically activate Pro. Check current price, duration and eligibility in the app or the official [Shopee store](https://shopee.vn/moingaymoiniemvui). |
+| Can I use Google Drive, Radio and playlists? | Yes, with supported sources and the appropriate permissions. Streaming needs connectivity. A playlist is not an offline download. |
+| Can the warning bubble float over Google Maps? | The phone overlay needs a compatible Android phone, overlay/location permissions, supported warning data and any required account entitlement. This is not a promise of an overlay on a car display. |
+| Android Auto or Android Automotive OS (AAOS)? | They are different environments. Support depends on the app edition and head unit. Android Auto does not mirror every phone feature. Installing an APK on AAOS does not establish full compatibility. |
+| Android TV, Google TV or TV Box? | Check the device, Android version, available controls and compatible release before installing. A phone build is not automatically suitable for every TV. |
+| iPhone, iPad or Apple CarPlay? | The official download guide currently provides Android packages and no public iOS release. Android Auto support does not imply Apple CarPlay support. |
+| Does the map work fully offline? | Offline map and routing behavior depends on the release and service configuration. Check the relevant release and [Lam Map guide](https://lam-music-24c126.pages.dev/lam-map/) before relying on it. Offline audio is a separate feature. |
+| Is warning coverage guaranteed worldwide? | No. Traffic warnings depend on supported data, region, permissions and device behavior. There is no guarantee of every camera, sign or lane-specific speed limit in every country. Follow actual road signs and local rules. |
+
+The package IDs, official domain and developer links identify this Android app. Similar names used by music businesses, learning products or shopping apps do not establish a connection. Use the official download guide to verify the release source; a filename or package ID alone does not verify an APK's signing certificate.
+
+English information reviewed **10 October 2026**.
+
 ## Quyền riêng tư và xóa tài khoản
 
 - [Chính sách quyền riêng tư](https://dlthoibinh.github.io/lam-music-pro/)
