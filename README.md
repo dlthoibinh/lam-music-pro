@@ -68,7 +68,7 @@ Nếu nhận link qua Zalo hoặc Facebook, hãy mở [trang tải Lâm Music ch
 **Lâm Music (Lam Music, LamMusic, LamMusicApp) is an Android music app with the integrated Lam Map feature.** Listen to local files and supported Google Drive sources, organize playlists, enjoy Radio and use a sleep timer. Lam Map provides map and journey information; compatible Android phones can display a floating traffic-warning panel while another app is open.
 
 - **Official website:** https://lam-music-24c126.pages.dev/
-- **Official Google Play listing:** [Lâm Music Pro: Nhạc & Bản đồ](https://play.google.com/store/apps/details?id=vn.lamdai.music) by Lâm Đại Ka Studio (package \`vn.lamdai.music\`). The Play edition does not offer YouTube background playback.
+- **Official Google Play listing:** [Lâm Music Pro: Nhạc & Bản đồ](https://play.google.com/store/apps/details?id=vn.lamdai.music) by Lâm Đại Ka Studio (package `vn.lamdai.music`). The Play edition does not offer YouTube background playback.
 - **Official download and device guide:** https://lam-music-24c126.pages.dev/tai-lam-music/
 - **English introduction:** https://lam-music-24c126.pages.dev/about/
 - **Developer:** Lâm Đại Ka. **Support:** [lamdltb@gmail.com](mailto:lamdltb@gmail.com).
