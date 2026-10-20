@@ -59,7 +59,7 @@ Nếu nhận link qua Zalo hoặc Facebook, hãy mở [trang tải Lâm Music ch
 | Nghe nhạc trên Google Drive khi khóa màn hình | [Nhạc Google Drive](https://lam-music-24c126.pages.dev/nhac-google-drive/) và [nghe nhạc tắt màn hình](https://lam-music-24c126.pages.dev/nghe-nhac-tat-man-hinh/). Cần quyền truy cập nguồn, mạng khi phát trực tuyến và cho phép hoạt động nền. Playlist không đồng nghĩa đã lưu nhạc offline. |
 | Nghe nhạc, Radio cùng cảnh báo khi mở Google Maps | [Bong bóng cảnh báo giao thông](https://lam-music-24c126.pages.dev/bong-bong-canh-bao-giao-thong/). Hướng dẫn dành cho điện thoại Android; cảnh báo phụ thuộc quyền, dữ liệu hỗ trợ và tài khoản. |
 | Dùng Lâm Music trên màn hình xe | [Android Auto và playlist](https://lam-music-24c126.pages.dev/android-auto/). Android Auto, AAOS và màn hình Android độc lập là các trường hợp khác nhau. Bong bóng trên điện thoại không tự xuất hiện đè lên Google Maps trong Android Auto. |
-| Cài trên iPhone hoặc iPad | [Hướng dẫn thiết bị trên trang tải](https://lam-music-24c126.pages.dev/tai-lam-music/#tai-ios). APK không cài được trên iPhone/iPad; trang tải chính thức hiện không cung cấp bản iOS. |
+| Cài trên iPhone hoặc iPad | [Hướng dẫn thiết bị trên trang tải](https://lam-music-24c126.pages.dev/tai-lam-music/). APK không cài được trên iPhone/iPad; trang tải chính thức hiện không cung cấp bản iOS. |
 | Xem thao tác thực tế trước khi cài | [Video hướng dẫn Lâm Music](https://lam-music-24c126.pages.dev/video/) và [kênh @LamMusicApp](https://www.youtube.com/@LamMusicApp). |
 
 
