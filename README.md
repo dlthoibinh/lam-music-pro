@@ -7,6 +7,7 @@
 | Website chính thức | [lam-music-24c126.pages.dev](https://lam-music-24c126.pages.dev/) |
 | Trang tải và hướng dẫn thiết bị | [Tải Lâm Music](https://lam-music-24c126.pages.dev/tai-lam-music/) |
 | Mã gói bản Play | `vn.lamdai.music` |
+| Google Play chính thức | [Lâm Music Pro: Nhạc & Bản đồ](https://play.google.com/store/apps/details?id=vn.lamdai.music) · Lâm Đại Ka Studio |
 | Mã gói bản Direct | `vn.lamdai.music.direct` |
 | Bản Direct trên APKPure | [Lâm Music – Nhạc & Lâm Map](https://apkpure.com/p/vn.lamdai.music.direct) |
 | Bản Direct trên Uptodown | [Lâm Music – Nhạc & Lâm Map](https://lam-music-nh-c-and-lam-map.en.uptodown.com/android) |
@@ -29,6 +30,7 @@ Facebook, Zalo và YouTube là các kênh cộng đồng, cập nhật và hư�
 
 ## Tải và sử dụng
 
+- [Cài Lâm Music Pro từ Google Play](https://play.google.com/store/apps/details?id=vn.lamdai.music): bản Play `vn.lamdai.music`, tên công khai “Lâm Music Pro: Nhạc & Bản đồ”, nhà phát triển Lâm Đại Ka Studio. Bản Play không hỗ trợ YouTube nền.
 - [Hướng dẫn tải, cài đặt và cập nhật](https://lam-music-24c126.pages.dev/tai-lam-music/): trang cố định dẫn tới nguồn APK do nhà phát triển cung cấp.
 - [Lâm Music Direct trên APKPure](https://apkpure.com/p/vn.lamdai.music.direct): mã gói `vn.lamdai.music.direct`, được phân phối ngoài Google Play.
 - [Các tính năng Lâm Music](https://lam-music-24c126.pages.dev/tinh-nang/).
@@ -66,6 +68,7 @@ Nếu nhận link qua Zalo hoặc Facebook, hãy mở [trang tải Lâm Music ch
 **Lâm Music (Lam Music, LamMusic, LamMusicApp) is an Android music app with the integrated Lam Map feature.** Listen to local files and supported Google Drive sources, organize playlists, enjoy Radio and use a sleep timer. Lam Map provides map and journey information; compatible Android phones can display a floating traffic-warning panel while another app is open.
 
 - **Official website:** https://lam-music-24c126.pages.dev/
+- **Official Google Play listing:** [Lâm Music Pro: Nhạc & Bản đồ](https://play.google.com/store/apps/details?id=vn.lamdai.music) by Lâm Đại Ka Studio (package \`vn.lamdai.music\`). The Play edition does not offer YouTube background playback.
 - **Official download and device guide:** https://lam-music-24c126.pages.dev/tai-lam-music/
 - **English introduction:** https://lam-music-24c126.pages.dev/about/
 - **Developer:** Lâm Đại Ka. **Support:** [lamdltb@gmail.com](mailto:lamdltb@gmail.com).
