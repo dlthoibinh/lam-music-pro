@@ -10,7 +10,6 @@
 | Google Play chính thức | [Lâm Music Pro: Nhạc & Bản đồ](https://play.google.com/store/apps/details?id=vn.lamdai.music) · Lâm Đại Ka Studio |
 | Mã gói bản Direct | `vn.lamdai.music.direct` |
 | Bản Direct trên APKPure | [Lâm Music – Nhạc & Lâm Map](https://apkpure.com/p/vn.lamdai.music.direct) |
-| Bản Direct trên Uptodown | [Lâm Music – Nhạc & Lâm Map](https://lam-music-nh-c-and-lam-map.en.uptodown.com/android) |
 | YouTube | [@LamMusicApp](https://www.youtube.com/@LamMusicApp) |
 | TikTok | [@xinhchaua.official](https://www.tiktok.com/@xinhchaua.official) |
 | Nhóm hỗ trợ Zalo | [Cộng đồng Lâm Music](https://zalo.me/g/o0sdnhud7gzo7f7jokpu) |
